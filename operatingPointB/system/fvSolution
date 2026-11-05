@@ -1,0 +1,89 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  13                                    |
+|   \\  /    A nd           | Website:  www.openfoam.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Operating point B (near-critical): stronger under-relaxation and a
+// tighter pressure solve stabilize the first SIMPLE iterations and keep
+// p positive (a negative p makes the h->T conversion impossible).
+
+solvers
+{
+    p
+    {
+        solver          GAMG;
+        tolerance       1e-8;
+        relTol          0.02;
+        smoother        GaussSeidel;
+        nPreSweeps      0;
+        nPostSweeps     2;
+        cacheAgglomeration true;
+        agglomerator    faceAreaMagCoeffs;
+        nCellsInCoarsestLevel 10;
+        mergeLevels     1;
+    }
+
+    pFinal
+    {
+        $p;
+        relTol          0;
+    }
+
+    "(U|h|e|k|epsilon|T)"
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-8;
+        relTol          0.05;
+    }
+
+    "(U|h|e|k|epsilon|T)Final"
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-8;
+        relTol          0;
+    }
+}
+
+SIMPLE
+{
+    nNonOrthogonalCorrectors 1;
+    consistent      yes;
+
+    residualControl
+    {
+        p               1e-5;
+        U               1e-5;
+        T               1e-5;
+        "(k|epsilon|h|e)" 1e-5;
+    }
+}
+
+relaxationFactors
+{
+    fields
+    {
+        p               0.2;
+    }
+    equations
+    {
+        U               0.5;
+        T               0.7;
+        "(k|epsilon)"   0.5;
+        "(h|e)"         0.7;
+    }
+}
+
+// ************************************************************************* //

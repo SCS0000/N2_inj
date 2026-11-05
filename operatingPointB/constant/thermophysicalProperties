@@ -1,0 +1,60 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  13                                    |
+|   \\  /    A nd           | Website:  www.openfoam.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Nitrogen (N2), cubic Peng-Robinson equation of state with constant
+// reference heat capacity c_p^0 = 1045 J/(kg K).
+
+thermoType
+{
+    type            hePsiThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;
+    equationOfState PengRobinsonGas;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+mixture
+{
+    specie
+    {
+        nMoles      1;
+        molWeight   28.01;          // W [kg/kmol]
+    }
+
+    equationOfState
+    {
+        Tc      126.19;             // critical temperature [K]
+        Vc      0.08941;            // critical volume [m^3/kmol]
+        Pc      3.4e6;              // critical pressure [Pa]
+        omega   0.037;              // acentric factor [-]
+    }
+
+    thermodynamics
+    {
+        Cp      1045;               // c_p^0 [J/(kg K)]
+        Hf      0;
+    }
+
+    transport
+    {
+        mu      2.0e-5;             // dynamic viscosity [Pa s]
+        Pr      0.71;               // Prandtl number [-]
+    }
+}
+
+// ************************************************************************* //

@@ -1,0 +1,12 @@
+#!/bin/sh
+# Operating point A: p_ch = 39.8 bar, T_ch = 297 K, T_in = 137 K, U_in = 5.4 m/s
+cd "${0%/*}" || exit
+. "${WM_PROJECT_DIR:?}/bin/tools/RunFunctions"
+
+runApplication blockMesh
+runApplication setFields
+runApplication foamRun -solver fluid
+
+# parallel variant:
+# runApplication decomposePar
+# runParallel foamRun -solver fluid

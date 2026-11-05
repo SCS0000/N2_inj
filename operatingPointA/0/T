@@ -1,0 +1,57 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  13                                    |
+|   \\  /    A nd           | Website:  www.openfoam.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Operating point A: T_in = 137 K, T_ch = 297 K
+dimensions      [0 0 0 1 0 0 0];
+
+internalField   uniform 297;
+
+boundaryField
+{
+    inlet
+    {
+        type            fixedValue;
+        value           uniform 137;
+    }
+
+    outlet
+    {
+        type            zeroGradient;
+    }
+
+    injectorWall
+    {
+        type            zeroGradient;    // adiabatic tube wall
+    }
+
+    chamberWall
+    {
+        type            fixedValue;
+        value           uniform 297;    // isothermal chamber wall
+    }
+
+    wedge
+    {
+        type            wedge;
+    }
+
+    axis
+    {
+        type            empty;
+    }
+}
+
+// ************************************************************************* //

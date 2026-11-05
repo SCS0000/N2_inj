@@ -1,0 +1,16 @@
+#!/bin/sh
+# Operating point B: p_ch = 35.0 bar, T_ch = 297 K, T_in = 100 K, U_in = 5.4 m/s
+# NOTE: with the unmodified OpenFOAM-13 Newton h->T conversion this case
+# aborts ("Maximum number of iterations exceeded: 100" / floating point
+# exception). Recompile the thermophysical libraries with the bisection
+# method in src/thermophysicalModels/specie/thermo/thermo/thermoI.H first.
+cd "${0%/*}" || exit
+. "${WM_PROJECT_DIR:?}/bin/tools/RunFunctions"
+
+runApplication blockMesh
+runApplication setFields
+runApplication foamRun -solver fluid
+
+# parallel variant:
+# runApplication decomposePar
+# runParallel foamRun -solver fluid

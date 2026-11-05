@@ -1,0 +1,125 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  13                                    |
+|   \\  /    A nd           | Website:  www.openfoam.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// 2D axisymmetric wedge (5 deg) of the Branam & Mayer test chamber:
+// injector tube d = 2.2 mm (r = 1.1 mm), included length L1 = 50 mm,
+// chamber diameter D = 80 mm (r = 40 mm), chamber length L2 = 200 mm.
+// All coordinates in [m]. Inlet at x = 0, injector exit / chamber start
+// at x = L1 = 0.05 m, outlet at x = L1 + L2 = 0.25 m.
+
+scale   1;
+
+vertices
+(
+    (0      0           0)              // 0  axis @ inlet
+    (0      0.0011      0)              // 1  injector wall @ inlet
+    (0.05   0.0011      0)              // 2  injector wall @ injector exit
+    (0.05   0.004       0)              // 3  r = 4 mm @ injector exit
+    (0.05   0.04        0)              // 4  chamber wall @ injector exit
+    (0.25   0.004       0)              // 5  r = 4 mm @ outlet
+    (0.25   0.04        0)              // 6  chamber wall @ outlet
+    (0      0.00109581  9.58713e-5)     // 7  injector wall @ inlet, 5 deg
+    (0.05   0.00109581  9.58713e-5)     // 8  injector wall @ exit, 5 deg
+    (0.05   0.00398478  3.48623e-4)     // 9  r = 4 mm @ exit, 5 deg
+    (0.05   0.0398478   3.48623e-3)     // 10  chamber wall @ exit, 5 deg
+    (0.25   0.00398478  3.48623e-4)     // 11  r = 4 mm @ outlet, 5 deg
+    (0.25   0.0398478   3.48623e-3)     // 12  chamber wall @ outlet, 5 deg
+    (0.05   0           0)              // 13  axis @ injector exit
+    (0.25   0           0)              // 14  axis @ outlet
+    (0.25   0.0011      0)              // 15  injector radius @ outlet
+    (0.25   0.00109581  9.58713e-5)     // 16  injector radius @ outlet, 5 deg
+);
+
+blocks
+(
+    hex (0 13 2 1   0 13 8 7)   (100 20 1)  simpleGrading (1 1 1)  // injector tube
+    hex (13 14 15 2 13 14 16 8) (200 20 1)  simpleGrading (1 1 1)  // chamber core r < 1.1 mm
+    hex (2 15 5 3   8 16 11 9) (200 40 1)  simpleGrading (1 1 1)  // chamber 1.1 < r < 4 mm
+    hex (3 5 6 4    9 11 12 10) (200 30 1)  simpleGrading (1 3 1)  // chamber 4 < r < 40 mm
+);
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (1 0 0 7)
+        );
+    }
+
+    injectorWall
+    {
+        type wall;
+        faces
+        (
+            (2 1 7 8)       // tube wall, adiabatic
+            (3 2 8 9)       // upstream chamber wall (injector face)
+            (4 3 9 10)
+        );
+    }
+
+    chamberWall
+    {
+        type wall;
+        faces
+        (
+            (6 4 10 12)     // isothermal chamber wall
+        );
+    }
+
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (14 15 16 14)
+            (15 5 11 16)
+            (5 6 12 11)
+        );
+    }
+
+    wedge
+    {
+        type wedge;
+        faces
+        (
+            (0 13 2 1)
+            (0 13 8 7)
+            (13 14 15 2)
+            (13 14 16 8)
+            (2 15 5 3)
+            (8 16 11 9)
+            (3 5 6 4)
+            (9 11 12 10)
+        );
+    }
+
+    axis
+    {
+        type empty;     // zero-area faces on the symmetry axis
+        faces
+        (
+            (0 13 13 0)
+            (13 14 14 13)
+        );
+    }
+);
+
+mergePatchPairs ();
+
+// ************************************************************************* //
