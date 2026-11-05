@@ -1,0 +1,58 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  13                                    |
+|   \\  /    A nd           | Website:  www.openfoam.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      k;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// k_in = 1.5*(I*U_in)^2 with I = 5 %: 1.5*(0.05*5.4)^2 = 0.1094 m^2/s^2
+dimensions      [0 2 -2 0 0 0 0];
+
+internalField   uniform 0.1;
+
+boundaryField
+{
+    inlet
+    {
+        type            fixedValue;
+        value           uniform 0.1094;
+    }
+
+    outlet
+    {
+        type            zeroGradient;
+    }
+
+    injectorWall
+    {
+        type            kqRWallFunction;
+        value           uniform 0;
+    }
+
+    chamberWall
+    {
+        type            kqRWallFunction;
+        value           uniform 0;
+    }
+
+    wedge
+    {
+        type            wedge;
+    }
+
+    axis
+    {
+        type            empty;
+    }
+}
+
+// ************************************************************************* //
