@@ -1,0 +1,35 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  13                                    |
+|   \\  /    A nd           | Website:  www.openfoam.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      setFieldsDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Pre-fill the injector tube with the injection temperature to reduce
+// the initial enthalpy/density jump at the inlet.
+
+defaultFieldValues
+(
+    volScalarFieldValue T 297
+);
+
+regions
+(
+    boxToCell
+    {
+        box (0 0 0) (0.051 0.0012 0.01);
+        field T;
+        value 100;
+    }
+);
+
+// ************************************************************************* //
