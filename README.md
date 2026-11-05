@@ -57,9 +57,9 @@ decomposePar && mpirun -np 4 foamRun -solver fluid -parallel
 
 - **Operating point B** requires the bisection method for the
   enthalpy→temperature conversion (Newton fails near the critical point,
-  see project description section 3.3): modify `T(...)` in
-  `$FOAM_INST_DIR/openfoam13/src/thermophysicalModels/specie/thermo/thermo/thermoI.H`
-  and recompile the thermophysical libraries with `wmake`.
+  see project description section 3.3): replace `thermoI.H` with the
+  patched version in `src-patch/` and recompile the thermophysical
+  libraries with `wmake` (see `src-patch/README.md`).
 - **Ideal-gas comparison** (operating point A): set
   `equationOfState perfectGas;` in `constant/thermophysicalProperties`.
 - **Post-processing**: axial/radial profiles at x/d = 5, 10, 15, 20, 30
